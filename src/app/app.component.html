@@ -1,0 +1,14 @@
+<select [(ngModel)]="activeForm">
+    <option value="template">Template Driven Form</option>
+    <option value="reactive">Reactive Form</option>
+  </select>
+  
+  @switch(activeForm) {
+    @case('template') {
+      <app-template-driven-form></app-template-driven-form>
+    }
+    @case('reactive') {
+      <app-reactive-form></app-reactive-form>
+    }
+  }
+<router-outlet />

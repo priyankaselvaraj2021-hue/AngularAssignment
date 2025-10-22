@@ -1,0 +1,64 @@
+<h1 class="form-title">{{ formConfig.title }}</h1>
+<form [formGroup]="form" (ngSubmit)="onSubmit()" class="form-container">
+  @for(field of formConfig.fields; track field.name) {
+    <div class="form-row">
+      @if(field.type !== 'checkbox') {
+        <label>{{ field.label }}</label>
+      }
+
+      @if(field.type === 'text' || field.type === 'email' || field.type === 'date') {
+        <input [type]="field.type" class="form-input" [formControlName]="field.name" />
+      }
+
+      @if(field.type === 'textarea') {
+        <textarea class="form-textarea" [formControlName]="field.name"></textarea>
+      }
+
+      @if(field.type === 'checkbox') {
+        <div class="form-checkbox">
+          <input type="checkbox" [formControlName]="field.name" />
+          <label>{{ field.label }}</label>
+        </div>
+      }
+
+      @if(field.type === 'dropdown' || field.type === 'multiselect') {
+        <ng-multiselect-dropdown
+          [data]="field.options ?? []"
+          [settings]="{ singleSelection: field.type === 'dropdown' }"
+          [formControlName]="field.name"
+          class="multiselect-dropdown">
+        </ng-multiselect-dropdown>
+      }
+
+      @if(form.get(field.name)?.touched && form.get(field.name)?.invalid) {
+        <div class="error-text">
+          @if(form.get(field.name)?.errors?.['required']) {
+            This field is required
+          }
+          @if(form.get(field.name)?.errors?.['pattern']) {
+            {{ field.validation?.message || 'Invalid format' }}
+          }
+        </div>
+      }
+    </div>
+  }
+
+  <button type="submit" class="submit-button">Submit</button>
+</form>
+
+@if(submittedData) {
+  <h2>Submitted Data</h2>
+  <ul class="submitted-list">
+    @for(field of formConfig.fields; track field.name) {
+      @if(submittedData[field.name] && (!(Array.isArray(submittedData[field.name]) && submittedData[field.name].length === 0))) {
+        <li><strong>{{ field.label }}</strong>: 
+          @if(Array.isArray(submittedData[field.name])) {
+            {{ submittedData[field.name].join(', ') }}
+          } @else {
+            {{ submittedData[field.name] }}
+          }
+        </li>
+      }
+    }
+  </ul>
+}
