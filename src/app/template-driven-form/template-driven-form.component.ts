@@ -1,8 +1,8 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms';
 import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
-import { formConfig } from '../Model/form-mock';
+import { ResgistrationForm } from '../Model/registration-form.model';
 
 @Component({
   selector: 'app-template-driven-form',
@@ -12,9 +12,9 @@ import { formConfig } from '../Model/form-mock';
 })
 export class TemplateDrivenFormComponent {
   Array=Array;
-  form = formConfig;
   submittedData: any = null;
   today = new Date().toISOString().split('T')[0];
+  @Input({required: true})formConfig!:ResgistrationForm;
 
   onSubmission(form: NgForm){
     if(form.valid){

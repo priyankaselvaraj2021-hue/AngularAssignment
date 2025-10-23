@@ -1,7 +1,7 @@
-import { Component, OnInit } from '@angular/core';
-import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { Component, Input, OnInit } from '@angular/core';
+import { FormControl, FormGroup, ReactiveFormsModule, UntypedFormArray, UntypedFormGroup, Validators } from '@angular/forms';
 import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
-import { formConfig } from '../Model/form-mock';
+import { ResgistrationForm } from '../Model/registration-form.model';
 
 @Component({
   selector: 'app-reactive-form',
@@ -13,7 +13,7 @@ export class ReactiveFormComponent implements OnInit{
   Array=Array;
   form!: FormGroup;
   submittedData: any = null;
-  formConfig = formConfig;
+  @Input({required: true})formConfig!:ResgistrationForm;
 
   ngOnInit(){
     const group: any = {};
@@ -28,13 +28,7 @@ export class ReactiveFormComponent implements OnInit{
 
   onSubmit() {
     if (this.form.valid) {
-      this.submittedData = Object.fromEntries(
-        Object.entries(this.form.value).filter(([_, value]) =>
-          value !== null &&
-          value !== '' &&
-          !(Array.isArray(value) && value.length === 0)
-        )
-      );
+      this.submittedData = this.form.value;
     } else {
       this.form.markAllAsTouched();
     }

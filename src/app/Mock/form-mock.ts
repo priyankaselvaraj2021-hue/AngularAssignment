@@ -1,4 +1,4 @@
-export const formConfig = {
+export const registrationForm = {
     title: 'Registration Form',
     fields: [
       { name: 'name', label: 'Name', type: 'text', required: true },

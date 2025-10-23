@@ -1,6 +1,6 @@
-<h1 class="form-title">{{form.title}}</h1>
+<h1 class="form-title">{{formConfig.title}}</h1>
 <form #registrationForm="ngForm" (ngSubmit)="onSubmission(registrationForm)" class="form-container">
-    @for(field of form.fields;track $index){
+    @for(field of formConfig.fields;track $index){
     <div class="form-row">
         @if(field.type !== 'checkbox') {
         <label>{{field.label}}</label>
@@ -55,7 +55,7 @@
 @if(submittedData){
 <h2>Submitted Data</h2>
 <ul class="submitted-list">
-    @for(field of form.fields; track field.name) {
+    @for(field of formConfig.fields; track field.name) {
     @if(submittedData[field.name] && (!(Array.isArray(submittedData[field.name]) && submittedData[field.name].length ===
     0))){
     <li><strong>{{field.label}}</strong>

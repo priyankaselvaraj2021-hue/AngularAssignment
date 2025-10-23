@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ReactiveFormComponent } from './reactive-form.component';
+import { registrationForm } from '../Mock/form-mock';
 
 describe('ReactiveFormComponent', () => {
   let component: ReactiveFormComponent;
@@ -14,6 +15,7 @@ describe('ReactiveFormComponent', () => {
 
     fixture = TestBed.createComponent(ReactiveFormComponent);
     component = fixture.componentInstance;
+    component.formConfig = registrationForm;
     fixture.detectChanges();
   });
 
@@ -37,7 +39,11 @@ describe('ReactiveFormComponent', () => {
     expect(component.submittedData).toEqual({
       name: 'John Doe',
       email: 'john@example.com',
-      gender: 'Male'      
+      gender: 'Male',
+      dob: '',
+      hobbies: '',
+      subscribe: '',
+      about:''
     });
     expect(component.form.status).toEqual("VALID");
   })
