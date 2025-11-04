@@ -16,3 +16,7 @@ export interface Pattern {
     pattern: string;
     message : string;
 }
+
+export const supportedInputFieldTypes = [
+    'text','email','password','date','number','tel','url'
+]

@@ -1,71 +1,121 @@
-<h1 class="form-title">{{formConfig.title}}</h1>
-<form #registrationForm="ngForm" (ngSubmit)="onSubmission(registrationForm)" class="form-container">
-    @for(field of formConfig.fields;track $index){
-    <div class="form-row">
-        @if(field.type !== 'checkbox') {
-        <label>{{field.label}}</label>
-        }
-        @if(field.type === 'text' || field.type === 'email' || field.type === 'date') {
-        <input [type]="field.type" class="form-input" [name]="field.name" ngModel [required]="field.required ?? false"
-            #modelRef="ngModel" [pattern]="field.validation?.pattern ?? ''" [max]="today">
-        <ng-container *ngTemplateOutlet="validation; context: { $implicit: modelRef }"></ng-container>
-        }
-
-        @if(field.type === 'checkbox') {
-        <div class="form-checkbox">
-            <input type="checkbox" id="{{ field.name }}" [name]="field.name" ngModel
-                [required]="field.required ?? false" #modelRef="ngModel" />
-            <label [for]="field.name" aria-required="true">{{ field.label }}</label>
-        </div>
-        <ng-container *ngTemplateOutlet="validation; context: { $implicit: modelRef }"></ng-container>
-        }
-
-        @if(field.type === "dropdown" || field.type === "multiselect") {
-            <ng-multiselect-dropdown [data]="field.options ?? []" ngModel [settings]="{
-                singleSelection: field.type === 'dropdown'
-              }" [name]="field.name" [required]="field.required ?? false" #modelRef="ngModel">
-            </ng-multiselect-dropdown>
-        <ng-container *ngTemplateOutlet="validation; context: { $implicit: modelRef }"></ng-container>
-        }
-
-        @if(field.type === 'textarea'){
-        <textarea class="form-textarea" [name]="field.name" ngModel [required]="field.required ?? false"
-            #modelRef="ngModel"></textarea>
-        <ng-container *ngTemplateOutlet="validation; context: { $implicit: modelRef }"></ng-container>
-        }
-
-        <ng-template #validation let-modelRef>
-            @if((modelRef.touched ||registrationForm.submitted) &&
-            modelRef.invalid) {
-            <div class="error-text">
-                @if(modelRef?.errors?.['required']) {
-                This field is required
-                }
-                @if(modelRef?.errors?.['pattern']) {
-                {{ field.validation?.message || 'Invalid format' }}
-                }
-            </div>
-            }
-        </ng-template>
-    </div>
+<h1 class="form-title">{{ formConfig.title }}</h1>
+<form
+  #registrationForm="ngForm"
+  (ngSubmit)="onSubmission(registrationForm)"
+  class="form-container"
+>
+  @for(field of formConfig.fields;track $index){
+  <div class="form-row">
+    @if(field.type !== 'checkbox') {
+    <label>{{ field.label }}
+        <span class="required">{{field.required ? '*':''}}</span>
+    </label>
     }
-    <button type="submit" class="submit-button">Submit</button>
+   
+    @if(supportedInputFieldTypes.includes(field.type)) {
+    <input
+      [type]="field.type"
+      class="form-input"
+      [name]="field.name"
+      ngModel
+      [required]="field.required ?? false"
+      #modelRef="ngModel"
+      [pattern]="field.validation?.pattern ?? ''"
+      [max]="today"
+    />
+    <ng-container
+      *ngTemplateOutlet="validation; context: { $implicit: modelRef }"
+    ></ng-container>
+    } @else if(field.type === 'checkbox') {
+    <div class="form-checkbox">
+      <input
+        type="checkbox"
+        id="{{ field.name }}"
+        [name]="field.name"
+        ngModel
+        [required]="field.required ?? false"
+        #modelRef="ngModel"
+      />
+      <label [for]="field.name">{{ field.label }}
+        <span class="requiredFlag">{{field.required ? '*':''}}</span>
+      </label>
+    </div>
+    <ng-container
+      *ngTemplateOutlet="validation; context: { $implicit: modelRef }"
+    ></ng-container>
+    } @else if(field.type === "dropdown" || field.type === "multiselect") {
+    <select
+      class="form-input"
+      [multiple]="field.type == 'multiselect' ? true : false"
+      [name]="field.name"
+      ngModel
+      #modelRef="ngModel"
+      [required]="field.required ?? false"
+    >
+      @if (field.type !== 'multiselect') {
+      <option value="">Select an option</option>
+      } @for(op of field.options;track op){
+      <option [value]="op">{{ op }}</option>
+      }
+    </select>
+    <ng-container
+      *ngTemplateOutlet="validation; context: { $implicit: modelRef }"
+    ></ng-container>
+    } @else if(field.type === 'textarea'){
+    <textarea
+      class="form-textarea"
+      [name]="field.name"
+      ngModel
+      [required]="field.required ?? false"
+      #modelRef="ngModel"
+    ></textarea>
+    <ng-container
+      *ngTemplateOutlet="validation; context: { $implicit: modelRef }"
+    ></ng-container>
+    } @else if(field.type === 'radio'){
+        <input type="radio"
+       [name]="field.name"
+       ngModel
+       hidden
+       #modelRef="ngModel" />
+        <div class="form-checkbox">
+            @for(op of field.options;track op){
+                <input type="radio" 
+                [id]="op" 
+                [name]="field.name"
+                [value]="op" ngModel [required]="field.required??false"/>
+                <label [for]="op">{{ op }}</label>
+            }
+        </div>
+        <ng-container
+      *ngTemplateOutlet="validation; context: { $implicit: modelRef }"
+    ></ng-container>
+    }
+
+    <ng-template #validation let-modelRef>
+      @if((modelRef.touched ||registrationForm.submitted) && modelRef.invalid) {
+      <div class="error-text">
+        @if(modelRef?.errors?.['required']) { This field is required }
+        @if(modelRef?.errors?.['pattern']) {
+        {{ field.validation?.message || "Invalid format" }}
+        }
+      </div>
+      }
+    </ng-template>
+  </div>
+  }
+  <button type="submit" class="submit-button">Submit</button>
 </form>
 
 @if(submittedData){
 <h2>Submitted Data</h2>
 <ul class="submitted-list">
-    @for(field of formConfig.fields; track field.name) {
-    @if(submittedData[field.name] && (!(Array.isArray(submittedData[field.name]) && submittedData[field.name].length ===
-    0))){
-    <li><strong>{{field.label}}</strong>
-        @if(Array.isArray(submittedData[field.name])){
-        {{submittedData[field.name].join(',')}}
-        }@else{
-        {{submittedData[field.name]}}
-        }
-    </li>
-    }
-    }
+  @for(field of formConfig.fields; track field.name) {
+  @if(submittedData[field.name]){
+  <li>
+    <strong>{{ field.label }}</strong>
+    {{ submittedData[field.name] }}
+  </li>
+  } }
 </ul>
 }

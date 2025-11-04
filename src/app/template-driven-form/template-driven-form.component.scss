@@ -26,7 +26,6 @@
 }
 
 .form-input,
-.ng-multiselect-dropdown,
 .form-textarea {
   padding: 0.5rem;
   font-size: 1rem;
@@ -90,35 +89,19 @@ strong {
 }
 }
 
-::ng-deep ng-multiselect-dropdown .dropdown-btn {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  padding: 6px 12px;
-  min-height: 40px;
-  box-sizing: border-box;
-}
-
-::ng-deep ng-multiselect-dropdown .dropdown-btn .selected-item {
-  margin: 2px 4px;
-  padding: 4px 8px;
-  border-radius: 12px;
-  background-color: #e0e0e0;
-  font-size: 0.9rem;
-  line-height: 1.2rem;
-  display: inline-flex;
-  align-items: center;
-}
-
 input.ng-invalid.ng-touched,
 textarea.ng-invalid.ng-touched,
-ng-multiselect-dropdown.ng-invalid.ng-touched {
+select.ng-invalid.ng-touched {
   border: 1px solid #d32f2f;
   box-shadow: 0 0 0 1px #d32f2f;
 }
 
 input.ng-invalid.ng-submitted,
 textarea.ng-invalid.ng-submitted,
-ng-multiselect-dropdown.ng-invalid.ng-submitted {
+select.ng-invalid.ng-submitted {
   border: 1px solid #d32f2f;
+}
+
+.required{
+  color: #d32f2f;
 }
